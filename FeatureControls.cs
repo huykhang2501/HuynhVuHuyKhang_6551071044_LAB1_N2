@@ -214,15 +214,16 @@ public sealed class RoomDialog : Form
     private readonly ComboBox _status = new() { DropDownStyle = ComboBoxStyle.DropDownList };
     private readonly ComboBox _clean = new() { DropDownStyle = ComboBoxStyle.DropDownList };
     private readonly ComboBox _type = new() { DropDownStyle = ComboBoxStyle.DropDownList };
-    private readonly TextBox _note = new() { Multiline = true, Height = 70 };
+    private readonly TextBox _note = new() { Multiline = true, Height = 70, MaxLength = 100, ScrollBars = ScrollBars.Vertical };
     public RoomDialog(string? code = null)
     {
-        _code = code; Text = code is null ? "Thêm phòng" : "Cập nhật phòng"; StartPosition = FormStartPosition.CenterParent; ClientSize = new Size(440, 470); FormBorderStyle = FormBorderStyle.FixedDialog; MaximizeBox = false;
+        _code = code; Text = code is null ? "Thêm phòng" : "Cập nhật phòng"; StartPosition = FormStartPosition.CenterParent; ClientSize = new Size(440, 570); FormBorderStyle = FormBorderStyle.FixedDialog; MaximizeBox = false;
         _status.Items.AddRange(["Bình thường", "Đã đặt", "Đang thuê", "Đang sửa chữa"]); _clean.Items.AddRange(["Đã dọn dẹp", "Chưa dọn dẹp"]); _status.SelectedIndex = _clean.SelectedIndex = 0;
         LoadTypes(); if (code is not null) LoadRoom(code);
-        var save = new Button { Text = "LƯU", Width = 125, Height = 38, Location = new Point(160, 405) }; Ui.StylePrimaryButton(save); save.Click += (_, _) => SaveRoom();
-        var panel = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 385, Padding = new Padding(35, 24, 35, 0), FlowDirection = FlowDirection.TopDown, WrapContents = false };
-        panel.Controls.Add(Ui.Field("Mã phòng", _id)); panel.Controls.Add(Ui.Field("Trạng thái phòng", _status)); panel.Controls.Add(Ui.Field("Tình trạng dọn dẹp", _clean)); panel.Controls.Add(Ui.Field("Loại phòng", _type)); panel.Controls.Add(Ui.Field("Ghi chú", _note)); Controls.Add(panel); Controls.Add(save);
+        var save = new Button { Text = "LƯU", Width = 125, Height = 38, Location = new Point(160, 505) }; Ui.StylePrimaryButton(save); save.Click += (_, _) => SaveRoom();
+        var panel = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 480, Padding = new Padding(35, 24, 35, 0), FlowDirection = FlowDirection.TopDown, WrapContents = false };
+        var noteField = Ui.Field("Ghi chú", _note); noteField.Height = 104;
+        panel.Controls.Add(Ui.Field("Mã phòng", _id)); panel.Controls.Add(Ui.Field("Trạng thái phòng", _status)); panel.Controls.Add(Ui.Field("Tình trạng dọn dẹp", _clean)); panel.Controls.Add(Ui.Field("Loại phòng", _type)); panel.Controls.Add(noteField); Controls.Add(panel); Controls.Add(save);
     }
     private void LoadTypes()
     {

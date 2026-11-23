@@ -11,7 +11,7 @@ public sealed class MainForm : Form
     public MainForm(UserSession session)
     {
         _session = session;
-        Text = "Hotel Management - Lab 1";
+        Text = "Hotel Management - Lab 2";
         WindowState = FormWindowState.Maximized;
         MinimumSize = new Size(1100, 680);
         BackColor = Color.White;
@@ -30,13 +30,17 @@ public sealed class MainForm : Form
     {
         var sidebar = new Panel { Dock = DockStyle.Left, Width = 245, BackColor = Ui.Teal, Padding = new Padding(14, 24, 14, 14) };
         var brand = new Label { Text = "HOTEL\nMANAGEMENT", AutoSize = true, ForeColor = Color.White, Font = new Font("Segoe UI", 17, FontStyle.Bold), Location = new Point(22, 20) };
-        var line = new Label { Text = "LAB 1 • WINFORMS", AutoSize = true, ForeColor = Color.FromArgb(195, 227, 222), Font = new Font("Segoe UI", 8, FontStyle.Bold), Location = new Point(24, 78) };
-        var menu = new FlowLayoutPanel { Dock = DockStyle.Bottom, Height = 520, FlowDirection = FlowDirection.TopDown, WrapContents = false, Padding = new Padding(0, 10, 0, 0) };
+        var line = new Label { Text = "LAB 2 • WINFORMS", AutoSize = true, ForeColor = Color.FromArgb(195, 227, 222), Font = new Font("Segoe UI", 8, FontStyle.Bold), Location = new Point(24, 78) };
+        var menu = new FlowLayoutPanel { Dock = DockStyle.Bottom, Height = 620, FlowDirection = FlowDirection.TopDown, WrapContents = false, Padding = new Padding(0, 10, 0, 0), AutoScroll = true };
         menu.Controls.Add(MenuButton("Trang chủ", (_, _) => ShowHome()));
         menu.Controls.Add(MenuButton("Sơ đồ phòng", (_, _) => ShowRoomBoard()));
         menu.Controls.Add(MenuButton("Quản lý phòng", (_, _) => ShowRooms()));
         menu.Controls.Add(MenuButton("Loại phòng", (_, _) => ShowRoomTypes()));
-        menu.Controls.Add(MenuButton("Khách hàng", (_, _) => ShowComingSoon("Khách hàng")));
+        menu.Controls.Add(MenuButton("Dịch vụ", (_, _) => ShowServices()));
+        menu.Controls.Add(MenuButton("Tiện nghi", (_, _) => ShowAmenities()));
+        menu.Controls.Add(MenuButton("Tiện nghi loại phòng", (_, _) => ShowRoomAmenities()));
+        menu.Controls.Add(MenuButton("Khách hàng", (_, _) => ShowCustomers()));
+        menu.Controls.Add(MenuButton("Nhân viên", (_, _) => ShowEmployees()));
         menu.Controls.Add(MenuButton("Hóa đơn", (_, _) => ShowComingSoon("Hóa đơn")));
         menu.Controls.Add(MenuButton("Thống kê", (_, _) => ShowComingSoon("Thống kê")));
         menu.Controls.Add(Ui.Spacer(10));
@@ -66,6 +70,12 @@ public sealed class MainForm : Form
     private void ShowRoomBoard() => SetContent("Sơ đồ phòng", new RoomBoardControl());
     private void ShowRooms() => SetContent("Quản lý phòng", new RoomsControl());
     private void ShowRoomTypes() => SetContent("Quản lý loại phòng", new RoomTypesControl());
+    private bool CanDelete => _session.Role >= 3;
+    private void ShowServices() => SetContent("Quản lý dịch vụ", new ServicesControl(CanDelete));
+    private void ShowAmenities() => SetContent("Quản lý tiện nghi", new AmenitiesControl(CanDelete));
+    private void ShowRoomAmenities() => SetContent("Tiện nghi theo loại phòng", new RoomAmenitiesControl(CanDelete));
+    private void ShowCustomers() => SetContent("Quản lý khách hàng", new CustomersControl(CanDelete));
+    private void ShowEmployees() => SetContent("Quản lý nhân viên", new EmployeesControl(CanDelete));
     private void ShowComingSoon(string name) => SetContent(name, new Label { Text = $"{name}\nChức năng sẽ được phát triển ở các bài lab tiếp theo.", Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleCenter, Font = new Font("Segoe UI", 15), ForeColor = Color.Gray });
     private static string RoleName(int role) => role switch { 3 => "Quản trị viên", 2 => "Quản lý", _ => "Nhân viên" };
 }
